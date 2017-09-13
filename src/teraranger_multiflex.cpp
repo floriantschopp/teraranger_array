@@ -345,8 +345,21 @@ void TerarangerHubMultiflex::spin()
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "teraranger_hub_multiflex");
-  teraranger_array::TerarangerHubMultiflex multiflex;
-  multiflex.spin();
+  try
+  {
+    teraranger_array::TerarangerHubMultiflex multiflex;
+    multiflex.spin();
+  }
+  catch(const serial::IOException& e)
+  {
+    // Faking ros error because logging macros not available
+    std::cerr << "\033[31m" << "[ERROR] [" << ros::Time::now() << "]: Fatal IO error" << "\033[0m" << std::endl;
+  }
+  catch(const serial::SerialException& e)
+  {
+    // Faking ros error because logging macros not available
+    std::cerr << "\033[31m" << "[ERROR] [" << ros::Time::now() << "]: Fatal serial error" << "\033[0m" << std::endl;
+  }
 
   return 0;
 }
